@@ -1,0 +1,789 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Understanding Active Directory: Key Concepts and Terminology</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="0ee91002-1849-4f6c-b21d-bf19e6fd291c" class="page sans"><header><img class="page-cover-image" src="https://play.vidyard.com/5KrFJWW2iFQoc8mTDyzcqh.jpg" style="object-position:center 50%"/><h1 class="page-title">Understanding Active Directory: Key Concepts and Terminology</h1><p class="page-description"></p></header><div class="page-body"><hr id="38f60099-e921-4a49-8a76-c6d6911d6ef9"/><p id="886e3935-c80a-44e7-826e-9d09f1b2053b" class="">Active Directory (AD) is a directory service developed by Microsoft for Windows domain networks. It provides a centralized way to manage and organize network resources, including users, computers, and other device</p><p id="101a0ad1-8216-4fb0-a8ae-53c892aa3677" class="">Active Directory Domain Services (AD DS) manages domains and provides a directory service for storing information about the domain&#x27;s objects, including users, computers, groups, and organizational units (OUs)</p><h3 id="5ffbb711-1742-4638-b115-e5edbf4cd03c" class="">Key Concepts in Active Directory:</h3><p id="c63b8d16-48aa-4fbd-97e4-a45706b4aaff" class=""><strong>Domain Controller (DC):</strong>Servers that host the Active Directory database and provide authentication and authorization services to users and computers within the domain.</p><p id="647beee5-5f74-425b-9c55-074d153bb427" class="">
+</p><p id="0873e553-fa4c-45a4-927e-055a47ed0ee8" class=""><strong>Forest</strong>: A forest is the topmost logical container in an Active Directory configuration that contains one or more domains. A forest represents a single instance of the Active Directory directory service.</p><p id="825130f3-6d64-46bb-aac2-4fc9e4f047d6" class="">
+</p><p id="993cd4d3-c0a2-421f-a099-3acfb55ce4ad" class=""><strong>Domain</strong>: Within a forest, a domain represents a logical grouping of objects, such as users, computers, and groups, that share the same directory database.</p><p id="155ded80-2d0a-4696-8469-80e146f3d5b7" class="">
+</p><p id="d6891093-c5ac-47bc-a2e2-8853aec2ebc0" class=""><strong>Organizational Units (OUs)</strong>: An OU is a container within a domain that can hold users, groups, computers, and even other OUs. OUs help organize objects within a domain and can also be used to apply Group Policy settings.</p><p id="26f001b9-7b21-4843-bba6-627be072a1a2" class="">
+</p><p id="eae7670f-7983-4075-9fbe-59e43a9a9a89" class=""><strong>Users / User Accounts</strong>: In Active Directory (AD), users are objects that represent individuals or entities needing access to network resources. A user object stores information such as username, password, contact details, and group memberships, which are used for authentication and authorization.</p><p id="a8f52581-278a-4e2d-aaa8-09cd4a65d71d" class="">User accounts in AD are stored in the default <strong>Users</strong> container. This container is not an Organizational Unit (OU), so Group Policy Objects (GPOs) cannot be linked directly to it.</p><p id="f9e3ab0b-ff00-452e-bd55-ec6f7d4af202" class="">In AD, there are two main types of user accounts:</p><ul id="b3b55652-e398-4ffe-a3e7-0a91e60cf8a1" class="bulleted-list"><li style="list-style-type:disc"><strong>Local Accounts</strong>: These accounts are stored on individual systems and are specific to each computer. Examples include Administrator, Guest, SYSTEM, Network Service, and Local Service accounts.</li></ul><ul id="5326d15c-68ea-4b54-b7fd-bc36f2891993" class="bulleted-list"><li style="list-style-type:disc"><strong>Domain User Accounts</strong>: These accounts are managed centrally in a domain and allow users to access resources across the entire domain</li></ul><p id="5abef4c5-27b3-4752-8348-c32a133d67c6" class="">
+</p><p id="ea6b0b07-c287-4e03-a705-ed6cc36e4c75" class=""><strong>Computer Accounts</strong>: Computer accounts are identified by the <code>$</code> symbol at the end of their name (e.g., <code>COMPUTERNAME$</code>). These accounts represent computers that are joined to the domain.</p><p id="29cbeda2-9c8d-4980-996e-d7fdaefbeef2" class="">
+</p><p id="1903af4e-b755-4bd6-91f9-f83728f825e1" class=""><strong>Example Path in Active Directory</strong></p><p id="783fa085-56bb-42c4-84cb-fc09d940294c" class=""><strong>OU Structure</strong>: <code>OU=Computers,OU=test,DC=vb,DC=local</code></p><ul id="5149d14a-e4d1-4344-a568-893fd71462fa" class="bulleted-list"><li style="list-style-type:disc">This path represents an Organizational Unit named &quot;Computers&quot; inside another OU named &quot;test&quot;, under the domain &quot;vb.local&quot;.</li></ul><p id="acd03975-3412-49d9-93a8-71f44dbc8cbd" class=""><strong>User Path</strong>: <code>CN=starfire,OU=Users,DC=vb,DC=local</code> <div class="indented"><ul id="2eb541a2-5333-4268-a50f-c692f1b71402" class="bulleted-list"><li style="list-style-type:disc">This path represents a user account named &quot;starfire&quot; in the &quot;Users&quot; OU under the domain &quot;vb.local&quot;.</li></ul></div></p><p id="6531ef82-eb3a-4767-a8fa-ef619c5f2e59" class="">
+</p><p id="afd4ac30-e14d-4c5f-b7ed-178f60fe412b" class=""><strong>Groups</strong>: Groups are used to collect user accounts, computer accounts, and other groups into manageable units. Groups can be added as members of other groups (nested groups), which helps organize and simplify permissions management.</p><p id="84b5a493-4df9-4b06-a1a7-566c1e3fd0ae" class=""><strong>Group Membership Example:</strong></p><p id="f52dd283-2200-4545-9ceb-13d0f14f7707" class="">If we create a group named &quot;Cat Group&quot; and add it to another group called &quot;Remote Management Group,&quot; all members of the &quot;Cat Group&quot; will automatically inherit the permissions assigned to the &quot;Remote Management Group.&quot; If we add a user named Robin to the &quot;Cat Group,&quot; Robin will be a member of both the &quot;Cat Group&quot; and the &quot;Remote Management Group.&quot;</p><p id="533c23fd-c504-4f7d-90c6-cc6c2699cbbf" class=""><strong>Group Types and Scopes</strong></p><ul id="4df5f1ee-fd33-4d41-a644-655f47cb47de" class="bulleted-list"><li style="list-style-type:disc"><strong>Security Groups</strong>: Used for assigning permissions and access controls to resources.</li></ul><ul id="40a1a27c-24ee-4016-a593-516ca95883bd" class="bulleted-list"><li style="list-style-type:disc"><strong>Distribution Groups</strong>: Used for email distribution; cannot be used for assigning permissions.</li></ul><p id="9fca7c89-3b41-4547-819b-7ed086631106" class=""><strong>Group Scopes</strong></p><ol type="1" id="c33bd9d1-c9bd-45e0-ba64-f2038e1cab75" class="numbered-list" start="1"><li><strong>Domain Local Group</strong><ul id="d4f5b55b-03ce-4801-acf2-9263a1971ecc" class="bulleted-list"><li style="list-style-type:disc">Used to assign permissions to resources within the domain where the group is created.</li></ul><ul id="a23cd2a1-3fc0-46c7-83e0-f630983f190d" class="bulleted-list"><li style="list-style-type:disc">Can contain users, global groups, and universal groups from any domain.</li></ul></li></ol><ol type="1" id="1436db97-ac4a-4a40-a64f-3ab798c345e4" class="numbered-list" start="2"><li><strong>Global Group</strong><ul id="059e306a-f299-4b91-92a3-fb44a8353bbd" class="bulleted-list"><li style="list-style-type:disc">Typically used to organize users within the same domain.</li></ul><ul id="8de041cf-0894-40d1-8c27-a652e09b813e" class="bulleted-list"><li style="list-style-type:disc">Can only contain users and groups from the domain where it is created but can be granted access to resources in any domain within the forest.</li></ul></li></ol><ol type="1" id="b26de1f9-9d47-4fee-b6dc-68017e0b1b63" class="numbered-list" start="3"><li><strong>Universal Group</strong><ul id="139cb9d4-f8a0-41ee-9cdd-1fcf6b9e0dff" class="bulleted-list"><li style="list-style-type:disc">Used to assign permissions to resources across multiple domains within a forest.</li></ul><ul id="9750644a-b9df-483c-a0a5-337622640384" class="bulleted-list"><li style="list-style-type:disc">Can contain users, global groups, and other universal groups from any domain within the forest.</li></ul><ul id="9d6bbedf-efb0-422c-ba7e-1c6cf0b75f15" class="bulleted-list"><li style="list-style-type:disc">Stored in the Global Catalog.</li></ul><p id="ce7dbdca-71ef-4d3b-805d-3011a014114b" class="">
+</p></li></ol><p id="620c231d-59f2-4c56-9528-5dd495dbdf3f" class=""><strong>Group Policy (GP)</strong>: Group Policy is a feature that allows administrators to define settings that control the working environment of user accounts and computer accounts. Group Policies can be applied to domains, sites, and OUs, but not directly to individual users or groups. You can apply GPOs only to the root of a domain or an OU</p><p id="b4284a98-ebf5-4854-a516-7906d5994888" class="">Hence Group Policies can be applied only to the root of a domain or to an OU, not directly to individual users or groups.</p><p id="74ce9f71-80b9-430d-a9cb-c14d516b7588" class=""><strong>Examples of GPO Uses</strong></p><p id="b278a1a3-22ab-4202-ad76-c89c0fa1a491" class=""><strong>Password Policies:</strong><div class="indented"><ul id="ff30c7fc-3ef1-4d9f-82e4-b354d4f4d3dd" class="bulleted-list"><li style="list-style-type:disc">Create separate GPOs to establish different password policies for service accounts, admin accounts, and standard user accounts.</li></ul></div></p><p id="f3b3bef2-0ebb-4457-8d78-0ed7af563301" class=""><strong>Removable Media Control:</strong><div class="indented"><ul id="cfa1e7c7-084c-44be-a05a-e921f52e5451" class="bulleted-list"><li style="list-style-type:disc">Prevent the use of USB ports and other removable media devices to enhance security.</li></ul></div></p><p id="984f3141-0b5a-4481-bacb-6a8b7010d7e5" class=""><strong>Screensaver Enforcement:</strong><div class="indented"><ul id="a2ed54f0-d18c-42de-8c17-112617e5e616" class="bulleted-list"><li style="list-style-type:disc">Enforce a screensaver with a password to ensure that unattended machines are locked.</li></ul></div></p><p id="19e946d1-06f4-4adb-882d-f1430a2dcece" class=""><strong>Application Restrictions:</strong><div class="indented"><ul id="5995c758-4d90-4ab6-824c-30d00958393a" class="bulleted-list"><li style="list-style-type:disc">Restrict access to applications such as <code>cmd.exe</code> and PowerShell for standard users to minimize security risks.</li></ul></div></p><p id="833799a7-49d9-4edb-9fc8-c17a17178531" class=""><strong>Audit and Logging Policies:</strong><div class="indented"><ul id="4933ba5c-b7ef-4bea-b5b3-69ed5dd62faa" class="bulleted-list"><li style="list-style-type:disc">Enforce policies for auditing and logging to track system and user activities.</li></ul></div></p><p id="4b46b7b8-e9da-4a64-a24d-7813640052ce" class=""><strong>Software Deployment:</strong><div class="indented"><ul id="2f2aaa8d-3463-4221-8246-a4e2985a1f9d" class="bulleted-list"><li style="list-style-type:disc">Deploy software across the domain, ensuring that all users have the necessary applications installed.</li></ul></div></p><p id="5d856045-242b-43aa-88cb-7711cb88034b" class=""><strong>Software Installation Control:</strong><div class="indented"><ul id="afb54a4a-3d5c-418c-87b5-144cf937cd43" class="bulleted-list"><li style="list-style-type:disc">Block users from installing unauthorized software to maintain control over the software environment.</li></ul></div></p><p id="ac1efbd8-fcaa-470d-9b6c-0bd0c83a17a0" class=""><strong>Logon Banner:</strong><div class="indented"><ul id="fa2d4640-811f-4fab-89b1-ed799e27a5e0" class="bulleted-list"><li style="list-style-type:disc">Display a logon banner with legal or compliance messages whenever a user logs into the system.</li></ul></div></p><hr id="13f70e0d-f77f-4b4b-baea-979379d90dbb"/><p id="10c92c1f-b67f-47a3-a76b-4c21b307b52f" class=""><strong>LM Hash Usage:</strong><div class="indented"><ul id="a4a2985b-b49a-449e-a33b-cde343a79646" class="bulleted-list"><li style="list-style-type:disc">Disallow the use of LM (LAN Manager) hashes in the domain to enhance password security.</li></ul></div></p><p id="6356ea2d-3af6-4a1e-9482-eaf6a3d3b1df" class=""><strong>Script Execution:</strong><div class="indented"><ul id="49df449c-ad4b-4b16-949c-003c8d7c8e56" class="bulleted-list"><li style="list-style-type:disc">Run scripts at startup/shutdown or user logon/logoff to perform specific tasks or configurations.</li></ul></div></p><p id="df4662d6-7f87-4e00-9d0b-1e0c38491ddd" class="">
+</p><h3 id="b17b0098-cb97-4059-bc9b-aecc1f84c747" class="">Active Directory Terminology</h3><p id="f207348c-697c-4de5-ae63-6e3a92723347" class=""><strong>Object</strong>: Any resource within AD, such as users, computers, printers, or domain controllers.</p><p id="2898f2b3-0cfb-4bda-b6c5-5a9072269659" class=""><strong>Attributes</strong>: Characteristics of an object. For example, a computer object might have attributes like hostname and DNS name.</p><p id="9736e0f4-7432-4d8f-abc7-e97d5124d070" class=""><strong>Schema</strong>: Defines the types of objects and their attributes within AD. It acts as a blueprint for the directory.</p><p id="4dbabfca-0eb2-478e-bd95-fbfaf85bdd6b" class=""><strong>Domain</strong>: A logical grouping of objects. Each domain operates independently but can be linked through trusts.</p><p id="d61dd817-2df9-427b-9794-00fdf05b92f7" class=""><strong>Forest</strong>: The top-level container, encompassing one or more domains.</p><p id="74db0c23-a9ff-40e4-b3d9-ab21e848c9bc" class=""><strong>Tree</strong>: A collection of domains within a forest, starting from a root domain.</p><p id="af0bd355-fb8e-4aba-95e5-f6c29429c865" class=""><strong>Global Unique Identifier (GUID)</strong>: A unique 128-bit value assigned to each AD object.</p><p id="11f54c7a-b6ab-4c7f-a49a-739ae6e7cae4" class=""><strong>Security Principal</strong>: An entity that the OS can authenticate, such as users or computer accounts.</p><p id="b5eefb24-0a99-4601-ad3f-f34fabc727dc" class=""><strong>Security Identifier (SID)</strong>: A unique identifier assigned to security principals.</p><p id="9080e3b4-c518-4de0-ac67-6ee4eb8f0ab6" class=""><strong>Distinguished Name (DN)</strong>: The full path to an object in AD.</p><p id="7f346759-b690-4f54-8105-b784ffc45995" class=""><strong>Relative Distinguished Name (RDN)</strong>: A component of the DN identifying the object uniquely at the current level.</p><p id="15a98bb5-a6a0-455a-9fe2-c170e1034eec" class=""><strong>sAMAccountName</strong>: The user logon name.</p><p id="95ab2488-7af7-4f49-8e55-1b1793a74323" class=""><strong>Global Catalog</strong>: A domain controller that holds copies of all objects in the forest and allows for searching across domains.</p><p id="34df3ee6-c3cb-4e1f-9897-4b55b17c9251" class=""><strong>Read-Only Domain Controller (RODC)</strong>: A domain controller with a read-only AD database.</p><p id="b4c32686-b7c5-4c9d-9d41-a0ae30918380" class=""><strong>Replication</strong>: The process of synchronizing AD data between domain controllers.</p><p id="63051729-4e14-43a1-83ad-97d93cd50db2" class=""><strong>Service Principal Name (SPN)</strong>: Identifies a service instance for Kerberos authentication.</p><p id="f1db6309-1e49-4c61-b552-7edb12ef1e35" class=""><strong>Access Control Entries (ACEs)</strong>: Part of an ACL, detailing access rights for users or groups.</p><p id="1bc57c2b-5b0c-48fb-9baa-f13506cf3650" class=""><strong>Group Policy Object (GPO)</strong>: Collections of policy settings applied across domains.</p><p id="3f102938-8834-4d80-800c-62e03945a0f9" class=""><strong>Access Control List (ACL)</strong>: An ordered list of ACEs applied to an object.</p><p id="a5224c60-073d-4d88-a2f3-04f533c4e389" class=""><strong>Discretionary Access Control List (DACL)</strong>: Defines access rights for security principals.</p><p id="e4801831-a059-459d-ac59-c48363ee0404" class=""><strong>Fully Qualified Domain Name (FQDN)</strong>: The complete domain name for a specific host.</p><p id="7ce3ef04-601a-477b-8907-13c899107b96" class=""><strong>Tombstone</strong>: Holds information about deleted AD objects for a set period.</p><p id="0439caa4-ce24-475b-8ff0-db612d71bbd9" class=""><strong>SYSVOL</strong>: A shared folder containing domain-wide public files like GPOs.</p><p id="23af82e7-fd4d-445e-859a-8c333411db27" class=""><strong>AdminSDHolder</strong>: Manages ACLs for privileged groups.</p><p id="4efcbbac-9210-4185-bcd6-3356a1b8859a" class=""><strong>Active Directory Users and Computers (ADUC)</strong>: A GUI tool for managing AD objects.</p><p id="fb69b4ee-819b-4c0c-81db-654c274c99b8" class=""><strong>ADSI Edit</strong>: A tool for advanced AD object management.</p><p id="1282957e-fca7-436e-a2e5-65c0e4d5d713" class=""><strong>sIDHistory</strong>: Stores previous SIDs for migrated objects.</p><p id="55d95663-f5ff-43a7-9527-6cdf7a932990" class=""><strong>NTDS.DIT</strong>: The database file containing AD data, including user password hashes.</p><p id="9e20d4d7-70de-4577-9a2c-2e611ff80664" class="">
+</p><p id="990c1818-11a6-4219-a7f8-0bbb5d29c0e0" class="">
+</p><hr id="d7cc39e7-c92a-4945-bf2f-b28b8b34f7b5"/></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Avenir, sans-serif;
+            color: #111;
+            background-color: #f5f5f5; /* Optional: Set background color to see the button better */
+            display: grid;
+            place-items: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .cta {
+            position: relative;
+            margin: auto;
+            padding: 19px 22px;
+            transition: all .2s ease;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .cta:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            border-radius: 28px;
+            background: rgba(255, 171, 157, 0.5);
+            width: 56px;
+            height: 56px;
+            transition: all .3s ease;
+            z-index: -1;
+        }
+
+        .cta span {
+            position: relative;
+            font-size: 16px;
+            line-height: 18px;
+            font-weight: 900;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .cta svg {
+            position: relative;
+            top: 0;
+            margin-left: 10px;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke: #111;
+            stroke-width: 2;
+            transform: translateX(-5px);
+            transition: all .3s ease;
+        }
+
+        .cta:hover:before {
+            width: 100%;
+            background: rgba(255, 171, 157, 1);
+        }
+
+        .cta:hover svg {
+            transform: translateX(0);
+        }
+
+        .cta:active {
+            transform: scale(.96);
+        }
+    </style>
+</head>
+<body>
+    <a href="#" class="cta" onclick="redirectToNextPage()">
+        <span>Return Home</span>
+        <svg width="13px" height="10px" viewBox="0 0 13 10">
+            <path d="M1,5 L11,5"></path>
+            <polyline points="8 1 12 5 8 9"></polyline>
+        </svg>
+    </a>
+
+    <script>
+        function redirectToNextPage() {
+            window.location.href = "index.html"; // Change "nextpage.html" to your desired URL
+        }
+    </script>
+</body>
+
